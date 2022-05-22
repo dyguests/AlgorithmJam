@@ -13,7 +13,7 @@ internal class SolutionTest {
     @Test
     fun lengthOfLongestSubstring_3() = validate("pwwkew", 3)
 
-    private fun validate(s: String, result: Int) {
-        assertEquals(result, Solution().lengthOfLongestSubstring(s))
+    private fun validate(s: String, expected: Int) {
+        assertEquals(expected, Solution().lengthOfLongestSubstring(s))
     }
 }
