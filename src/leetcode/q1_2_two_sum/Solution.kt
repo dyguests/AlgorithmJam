@@ -1,4 +1,4 @@
-package leetcode.q2_two_sum
+package leetcode.q1_2_two_sum
 
 import java.security.InvalidParameterException
 
