@@ -1,9 +1,8 @@
 package leetcode.q18_4sum;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 class Solution {
     public List<List<Integer>> fourSum(int[] nums, int target) {
@@ -17,16 +16,32 @@ class Solution {
      * @param nums sorted array
      */
     private List<List<Integer>> nSum(int[] nums, int n, int target) {
-        HashSet<Integer> usedIndexes = new HashSet<>();
-        int remainder = target;
-        for (int k = n; k > 0; k--) {
-            int closestIndex = binarySearchClosest(nums, remainder / k);
-            //            swing(nums, closestIndex);
-            for (int i = 0; i < nums.length; i++) {
-                int swingIndex = getSwingIndex(closestIndex, nums.length, i);
+        Map<String, List<Integer>> result = new HashMap<>();
+        nSum(nums, n, target, new HashSet<>(), result);
+        return new ArrayList<>(result.values());
+    }
+
+    private void nSum(int[] nums, int n, int target, HashSet<Integer> usedIndexes, Map<String, List<Integer>> result) {
+        // TODO 去重，不足n个元素也要去重
+
+        if (n == 0) {
+            if (target == 0) {
+                List<Integer> tuple = usedIndexes.stream().map(index -> nums[index]).sorted().collect(Collectors.toList());
+                String key = tuple.stream().map(Object::toString).collect(Collectors.joining());
+                result.putIfAbsent(key, tuple);
             }
+            return;
         }
-        return new ArrayList<>();
+
+        int closestIndex = binarySearchClosest(nums, target / n);
+        IntStream.range(0, nums.length)
+                .map(index -> getSwingIndex(closestIndex, nums.length, index))
+                .filter(index -> !usedIndexes.contains(index))
+                .forEach(index -> {
+                    usedIndexes.add(index);
+                    nSum(nums, n - 1, target - nums[index], usedIndexes, result);
+                    usedIndexes.remove(index);
+                });
     }
 
     static int binarySearchClosest(int[] array, int key) {

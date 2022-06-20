@@ -1,13 +1,27 @@
 package leetcode.q18_4sum;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SolutionTest {
-
     @Test
     void fourSum() {
+        validateFourSum(new int[]{1, 0, -1, 0, -2, 2}, 0, new int[][]{{-2, -1, 1, 2}, {-2, 0, 0, 2}, {-1, 0, 0, 1}});
+    }
+
+    private void validateFourSum(int[] nums, int target, int[][] expected) {
+        List<List<Integer>> result = new Solution().fourSum(nums, target);
+        assertEquals(expected.length,result.size());
+        for (int[] expectedI : expected) {
+            for (List<Integer> resultI : result) {
+//                assertEquals(expectedI.length,resultI.size());
+            }
+        }
     }
 
     @Test
