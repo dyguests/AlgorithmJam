@@ -24,7 +24,7 @@ class Solution {
     private void nSum(int[][] numGroups, int k, int target, int[] usedIndexes, Set<Integer> tupleHashes, List<List<Integer>> result) {
         // TODO 去重，不足n个元素也要去重
 
-        if (k == usedIndexes.length - 1) {
+        if (k == usedIndexes.length) {
             if (target == 0) {
                 int[] tuple = Arrays.stream(usedIndexes).map(index -> numGroups[index][0]).sorted().toArray();
                 int hash = getHash(tuple);
