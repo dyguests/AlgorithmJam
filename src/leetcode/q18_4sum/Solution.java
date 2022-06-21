@@ -8,39 +8,44 @@ class Solution {
     public List<List<Integer>> fourSum(int[] nums, int target) {
         int n = 4;
         int[][] numGroups = sample(nums, n);
-        Arrays.sort(nums);
-        return nSum(nums, n, target);
+        return nSum(numGroups, n, target);
     }
 
     /**
-     * @param nums sorted array
+     * @param numGroups sorted grouped array
      */
-    private List<List<Integer>> nSum(int[] nums, int n, int target) {
-        Map<String, List<Integer>> result = new HashMap<>();
-        nSum(nums, n, target, new HashSet<>(), result);
-        return new ArrayList<>(result.values());
+    private List<List<Integer>> nSum(int[][] numGroups, int n, int target) {
+        HashSet<Integer> tupleHashes = new HashSet<>();
+        List<List<Integer>> result = new ArrayList<>();
+        nSum(numGroups, 0, target, new int[n], tupleHashes, result);
+        return result;
     }
 
-    private void nSum(int[] nums, int n, int target, HashSet<Integer> usedIndexes, Map<String, List<Integer>> result) {
+    private void nSum(int[][] numGroups, int k, int target, int[] usedIndexes, Set<Integer> tupleHashes, List<List<Integer>> result) {
         // TODO 去重，不足n个元素也要去重
 
-        if (n == 0) {
+        if (k == usedIndexes.length - 1) {
             if (target == 0) {
-                List<Integer> tuple = usedIndexes.stream().map(index -> nums[index]).sorted().collect(Collectors.toList());
-                String key = tuple.stream().map(Object::toString).collect(Collectors.joining());
-                result.putIfAbsent(key, tuple);
+                int[] tuple = Arrays.stream(usedIndexes).map(index -> numGroups[index][0]).sorted().toArray();
+                int hash = getHash(tuple);
+                if (!tupleHashes.contains(hash)) {
+                    tupleHashes.add(hash);
+                    result.add(Arrays.stream(tuple).boxed().collect(Collectors.toList()));
+                }
             }
             return;
         }
 
-        int closestIndex = binarySearchClosest(nums, target / n);
-        IntStream.range(0, nums.length)
-                .map(index -> getSwingIndex(closestIndex, nums.length, index))
-                .filter(index -> !usedIndexes.contains(index))
+        int closestIndex = binarySearchClosest(numGroups, target / (usedIndexes.length - k));
+        IntStream.range(0, numGroups.length)
+                .map(index -> getSwingIndex(closestIndex, numGroups.length, index))
+                .filter(index -> numGroups[index][1] > 0)
                 .forEach(index -> {
-                    usedIndexes.add(index);
-                    nSum(nums, n - 1, target - nums[index], usedIndexes, result);
-                    usedIndexes.remove(index);
+                    numGroups[index][1]--;
+                    usedIndexes[k] = index;
+                    nSum(numGroups, k + 1, target - numGroups[index][0], usedIndexes, tupleHashes, result);
+                    numGroups[index][1]++;
+                    //                    usedIndexes[k] = 0;
                 });
     }
 
@@ -48,10 +53,10 @@ class Solution {
      * @return int[][] 把nums从小到大排序，return[0] < return[1]; 对每个 return[i]，有return[i][0]为数值，return[i][1]为重复的次数
      * 对于n数之和，最多重复n次。
      */
-    private int[][] sample(int[] nums, int n) {
-        List<int[]> list = new ArrayList<>();
+    static int[][] sample(int[] nums, int n) {
+        Arrays.sort(nums);// todo 可优化
 
-        Arrays.sort(nums);
+        List<int[]> list = new ArrayList<>();
         int[] lastNumGroup = null;
         for (int num : nums) {
             if (lastNumGroup == null) {
@@ -67,27 +72,28 @@ class Solution {
                 }
             }
         }
-        return new int[][]{};
+        return list.toArray(int[][]::new);
     }
 
-    static int binarySearchClosest(int[] array, int key) {
-        return binarySearchClosest0(array, 0, array.length, key);
+    static int binarySearchClosest(int[][] arrayGroup, int key) {
+        return binarySearchClosest0(arrayGroup, 0, arrayGroup.length, key);
     }
 
-    static int binarySearchClosest(int[] array, int fromIndex, int toIndex, int key) {
-        return binarySearchClosest0(array, fromIndex, toIndex, key);
+    static int binarySearchClosest(int[][] arrayGroup, int fromIndex, int toIndex, int key) {
+        // todo 后续可以替代成这个，不一定要从头开始二分查找
+        return binarySearchClosest0(arrayGroup, fromIndex, toIndex, key);
     }
 
     /**
      * java.util.Arrays.binarySearch( int[],int)
      */
-    private static int binarySearchClosest0(int[] array, int fromIndex, int toIndex, int key) {
+    private static int binarySearchClosest0(int[][] arrayGroup, int fromIndex, int toIndex, int key) {
         int low = fromIndex;
         int high = toIndex - 1;
         int mid = -(low + 1);
         while (low <= high) {
             mid = low + high >>> 1;
-            int midVal = array[mid];
+            int midVal = arrayGroup[mid][0];
             if (midVal < key) {
                 low = mid + 1;
             } else {
@@ -117,5 +123,13 @@ class Solution {
             return length - 1 - index;
         }
         return start + (((index & 1) == 1) ? 1 : -1) * ((index + 1) / 2);
+    }
+
+    private int getHash(int[] tuple) {
+        int hash = tuple[0];
+        for (int i = 1; i < tuple.length - 1; i++) {
+            hash = hash * 31 + tuple[i]; // todo 31?
+        }
+        return hash;
     }
 }
