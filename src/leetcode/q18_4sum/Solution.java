@@ -6,11 +6,11 @@ import java.util.stream.IntStream;
 
 class Solution {
     public List<List<Integer>> fourSum(int[] nums, int target) {
+        int n = 4;
+        int[][] numGroups = sample(nums, n);
         Arrays.sort(nums);
-        return nSum(nums, 4, target);
+        return nSum(nums, n, target);
     }
-
-    //        java.util.Arrays.binarySearch( int[],int)
 
     /**
      * @param nums sorted array
@@ -44,6 +44,32 @@ class Solution {
                 });
     }
 
+    /**
+     * @return int[][] 把nums从小到大排序，return[0] < return[1]; 对每个 return[i]，有return[i][0]为数值，return[i][1]为重复的次数
+     * 对于n数之和，最多重复n次。
+     */
+    private int[][] sample(int[] nums, int n) {
+        List<int[]> list = new ArrayList<>();
+
+        Arrays.sort(nums);
+        int[] lastNumGroup = null;
+        for (int num : nums) {
+            if (lastNumGroup == null) {
+                lastNumGroup = new int[]{num, 1};
+                list.add(lastNumGroup);
+            } else if (lastNumGroup[0] != num) {
+                lastNumGroup = new int[]{num, 1};
+                list.add(lastNumGroup);
+            } else {
+                int count = lastNumGroup[1];
+                if (count < n) {
+                    lastNumGroup[1] = count + 1;
+                }
+            }
+        }
+        return new int[][]{};
+    }
+
     static int binarySearchClosest(int[] array, int key) {
         return binarySearchClosest0(array, 0, array.length, key);
     }
@@ -52,6 +78,9 @@ class Solution {
         return binarySearchClosest0(array, fromIndex, toIndex, key);
     }
 
+    /**
+     * java.util.Arrays.binarySearch( int[],int)
+     */
     private static int binarySearchClosest0(int[] array, int fromIndex, int toIndex, int key) {
         int low = fromIndex;
         int high = toIndex - 1;
