@@ -37,6 +37,10 @@ class Solution {
         }
 
         int closestIndex = binarySearchClosest(numGroups, target / (usedIndexes.length - k));
+        //        int index = 0;
+        //        while (index >= 0 && index < numGroups.length) {
+        //            index++;
+        //        }
         IntStream.range(0, numGroups.length)
                 .map(index -> getSwingIndex(closestIndex, numGroups.length, index))
                 .filter(index -> numGroups[index][1] > 0)
