@@ -2,8 +2,32 @@
 
 public class Solution
 {
-    public string LongestPalindrome(string s)
+    public string LongestPalindrome(string str)
     {
-        return "bab";
+        var result = "";
+        for (var i = 0; i < str.Length; i++)
+        {
+            for (var j = i + 1; j < str.Length; j++)
+            {
+                if (j - i <= result.Length) continue;
+
+                var matched = true;
+                for (int k = 0; k <= (j - i) / 2; k++)
+                {
+                    if (str[i + k] != str[j - k])
+                    {
+                        matched = false;
+                        break;
+                    }
+                }
+
+                if (matched)
+                {
+                    result = str.Substring(i, j - i + 1);
+                }
+            }
+        }
+
+        return result;
     }
 }
