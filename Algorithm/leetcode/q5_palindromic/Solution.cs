@@ -7,9 +7,9 @@ public class Solution
         var result = "";
         for (var i = 0; i < str.Length; i++)
         {
-            for (var j = i + 1; j < str.Length; j++)
+            for (var j = i; j < str.Length; j++)
             {
-                if (j - i <= result.Length) continue;
+                if (j - i + 1 <= result.Length) continue;
 
                 var matched = true;
                 for (int k = 0; k <= (j - i) / 2; k++)
