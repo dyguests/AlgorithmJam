@@ -12,7 +12,11 @@ public class SolutionTests
     [Test]
     public void Test1()
     {
-        var actual = new Solution().LongestPalindrome("babad");
-        Assert.Pass();
+        Check("babad", "bab");
+    }
+
+    private static void Check(string input, string expected)
+    {
+        Assert.That(new Solution().LongestPalindrome(input), Is.EqualTo(expected));
     }
 }
