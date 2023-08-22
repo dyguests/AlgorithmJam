@@ -27,6 +27,9 @@ public class SolutionTests
     [Test]
     public void Test3() => Check("a", "a");
 
+    [Test]
+    public void Test4() => Check("", "");
+
     private static void Check(string input, params string[] expectedArray)
     {
         Assert.That(new Solution().LongestPalindrome(input), Is.AnyOf(expectedArray));
