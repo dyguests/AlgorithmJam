@@ -14,7 +14,7 @@ public class Solution
 
         for (int i = n - 1; i >= 0; i--)
         {
-            var ani = A(n, i);
+            var ani = A(i, i);
             var quotient = k / ani;
             k %= ani;
             result.Append(numbers[quotient]);
@@ -26,9 +26,9 @@ public class Solution
 
     private int A(int a, int b)
     {
-        if (a <= b) throw new InvalidOperationException("a<=b");
+        if (a < b) throw new InvalidOperationException("a<=b");
 
-        if (b * 2 > a) b = a - b;
+        // if (b * 2 > a) b = a - b;
 
         int r = 1;
         for (int i = 0; i < b; i++)
