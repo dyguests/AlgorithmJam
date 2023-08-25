@@ -23,11 +23,11 @@ public class Solution
         var numbers = Enumerable.Range(1, n).ToList();
         var result = new StringBuilder();
 
-        for (int i = n - 1; i >= 0; i--)
+        for (var i = n - 1; i >= 0; i--)
         {
             var ani = Factorials[i];
             var quotient = k / ani;
-            k %= ani;
+            k -= quotient * ani;
             result.Append(numbers[quotient]);
             numbers.RemoveAt(quotient);
         }
