@@ -12,8 +12,11 @@ public class SolutionTests
     [Test]
     public void Test1() => Check(3, 3, "213");
 
-  [Test]
+    [Test]
     public void Test2() => Check(4, 9, "2314");
+
+    [Test]
+    public void Test3() => Check(3, 2, "132");
 
     private static void Check(int n, int k, string expected)
     {
