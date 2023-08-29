@@ -13,7 +13,7 @@ public class SolutionTests
     public void Test1() => Check(new[] { 2, 3, 6 }, true);
 
     [Test]
-    public void Test2() => Check(new[] { 3, 9, 5 }, true);
+    public void Test2() => Check(new[] { 3, 9, 5 }, false);
 
     [Test]
     public void Test3() => Check(new[] { 4, 3, 12, 8 }, true);
