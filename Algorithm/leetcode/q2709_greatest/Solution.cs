@@ -2,48 +2,70 @@ namespace Algorithm.leetcode.q2709_greatest;
 
 public class Solution
 {
+    HashSet<int> st = new HashSet<int>();
+    int[] p = new int[100010];
+
     public bool CanTraverseAllPairs(int[] nums)
     {
-        var factorss = new HashSet<HashSet<int>>();
-        foreach (var num in nums)
+        foreach (var i in nums)
         {
-            var factors = Factorize(num);
-            var matchedFactorss = factorss.Where(factors2 => factors2.Any(factor2 => factors.Any(factor => factor == factor2))).ToList();
-            if (matchedFactorss.Any())
+            if (i == 1) return nums.Length == 1;
+            var tmp = i;
+            var lst = 1;
+            for (int j = 2; j < Math.Sqrt(tmp); j++)
             {
-                var matchedFactors = matchedFactorss.SelectMany(factors2 => factors2).ToHashSet();
-                matchedFactors.UnionWith(factors);
-                foreach (var matchedFactors2 in matchedFactorss)
+                if (tmp % j == 0)
                 {
-                    factorss.Remove(matchedFactors2);
+                    if (p[j] == 0)
+                    {
+                        p[j] = j;
+                        st.Add(j);
+                    }
+
+                    if (lst != 1)
+                    {
+                        Merge(lst, j);
+                    }
+
+                    lst = j;
+                    while (tmp % j == 0) tmp /= j;
+                }
+            }
+
+            if (tmp > 1)
+            {
+                if (p[tmp] == 0)
+                {
+                    p[tmp] = tmp;
+                    st.Add(tmp);
                 }
 
-                factorss.Add(matchedFactors);
-            }
-            else
-            {
-                factorss.Add(factors);
+                if (lst != 1)
+                {
+                    Merge(lst, tmp);
+                }
             }
         }
 
-        return factorss.Count == 1;
+        return st.Count == 1;
     }
 
-    private HashSet<int> Factorize(int num)
+    private void Merge(int a, int b)
     {
-        var factors = new HashSet<int>();
-        var sqrt = (int)Math.Sqrt(num);
-        for (int i = 2; i <= sqrt; i++)
+        if (a < b)
         {
-            if (num % i == 0)
-            {
-                factors.Add(i);
-                factors.Add(num / i);
-            }
+            a ^= b;
+            b ^= a;
+            a ^= b;
         }
 
-        factors.Add(num);
+        st.Remove(Find(b));
+        p[Find(b)] = Find(a);
+        st.Add(Find(a));
+    }
 
-        return factors;
+    private int Find(int x)
+    {
+        return p[x] == x ? p[x] : (p[x] = Find(p[x]));
     }
 }
