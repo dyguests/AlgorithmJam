@@ -2,24 +2,25 @@ namespace Algorithm.leetcode.q2709_greatest;
 
 public class Solution
 {
-    HashSet<int> st = new HashSet<int>();
-    int[] p = new int[100010];
+    private readonly int[] _primes = new int[100010];
+    private readonly HashSet<int> _set = new();
 
     public bool CanTraverseAllPairs(int[] nums)
     {
-        foreach (var i in nums)
+        foreach (var num in nums)
         {
-            if (i == 1) return nums.Length == 1;
-            var tmp = i;
-            var lst = 1;
-            for (int j = 2; j < Math.Sqrt(tmp); j++)
+            if (num == 1) return nums.Length == 1;
+
+            int tNum = num;
+            int lst = 1;
+            for (int j = 2; j <= Math.Sqrt(tNum); j++)
             {
-                if (tmp % j == 0)
+                if (tNum % j == 0)
                 {
-                    if (p[j] == 0)
+                    if (_primes[j] == 0)
                     {
-                        p[j] = j;
-                        st.Add(j);
+                        _primes[j] = j;
+                        _set.Add(j);
                     }
 
                     if (lst != 1)
@@ -28,27 +29,29 @@ public class Solution
                     }
 
                     lst = j;
-                    while (tmp % j == 0) tmp /= j;
+                    while (tNum % j == 0) tNum /= j;
                 }
             }
 
-            if (tmp > 1)
+            if (tNum > 1)
             {
-                if (p[tmp] == 0)
+                if (_primes[tNum] == 0)
                 {
-                    p[tmp] = tmp;
-                    st.Add(tmp);
+                    _primes[tNum] = tNum;
+                    _set.Add(tNum);
                 }
 
                 if (lst != 1)
                 {
-                    Merge(lst, tmp);
+                    Merge(lst, tNum);
                 }
             }
         }
 
-        return st.Count == 1;
+        return _set.Count == 1;
     }
+
+    private int Find(int x) => _primes[x] == x ? _primes[x] : _primes[x] = Find(_primes[x]);
 
     private void Merge(int a, int b)
     {
@@ -59,13 +62,8 @@ public class Solution
             a ^= b;
         }
 
-        st.Remove(Find(b));
-        p[Find(b)] = Find(a);
-        st.Add(Find(a));
-    }
-
-    private int Find(int x)
-    {
-        return p[x] == x ? p[x] : (p[x] = Find(p[x]));
+        _set.Remove(Find(b));
+        _primes[Find(b)] = Find(a);
+        _set.Add(Find(a));
     }
 }
